@@ -22,7 +22,7 @@ public class Test
         var obj = new string('-', 1000);
         string findStr = $"{obj}Q12345Q{obj}";
       
-        for (int i = 0; i < 100000; i++)
+        for (int i = 0; i < 2000; i++)
         {
              text1 = Regex.Match(findStr, "Q(?<obj>[^Q]+)").Groups["obj"].Value;
            
@@ -34,7 +34,7 @@ public class Test
         var obj = new string('-', 1000);
         string findStr = $"{obj}Q12345Q{obj}";
        
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < 2000; i++)
         {
             text2 = findStr.Cut("Q", "Q");
            // Console.WriteLine(text);

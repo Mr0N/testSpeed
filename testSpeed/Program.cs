@@ -21,11 +21,11 @@ public class Test
     public void RegexTest()
     {
         var obj = new string('-', 1000);
-        string findStr = $"{obj}Q12345Q{obj}";
+        string findStr = $"{obj}Obj12345Obj{obj}";
 
         for (int i = 0; i < 2000; i++)
         {
-            text1 = new Regex("Q(?<obj>[^Q]+)")
+            text1 = new Regex("Obj(?<obj>[^(Obj)]+)Obj")
                 .Match(findStr)
                 .Groups["obj"].Value;
 
@@ -36,11 +36,11 @@ public class Test
     public void Cut()
     {
         var obj = new string('-', 1000);
-        string findStr = $"{obj}Q12345Q{obj}";
+        string findStr = $"{obj}Obj12345Obj{obj}";
 
         for (int i = 0; i < 2000; i++)
         {
-            text2 = findStr.Cut("Q", "Q");
+            text2 = findStr.Cut("Obj", "Obj");
             // Console.WriteLine(text);
         }
     }
@@ -69,7 +69,7 @@ public static class Ext
             throw new Exception();
         else if (endIndex == -1 && exception == false)
             return null;
-
+        //return new ReadOnlySpan<char>(text.AsSpan(), beginIndex, endIndex - beginIndex);
 
         return text.Substring(beginIndex, endIndex - beginIndex);
     }

@@ -18,26 +18,30 @@ public class Test
 
     string text1 = "";
     [Benchmark]
-    public void RegexTest() {
+    public void RegexTest()
+    {
         var obj = new string('-', 1000);
         string findStr = $"{obj}Q12345Q{obj}";
-      
+
         for (int i = 0; i < 2000; i++)
         {
-             text1 = Regex.Match(findStr, "Q(?<obj>[^Q]+)").Groups["obj"].Value;
-           
+            text1 = new Regex("Q(?<obj>[^Q]+)")
+                .Match(findStr)
+                .Groups["obj"].Value;
+
         }
     }
     string text2 = "";
     [Benchmark]
-    public void Cut() {
+    public void Cut()
+    {
         var obj = new string('-', 1000);
         string findStr = $"{obj}Q12345Q{obj}";
-       
+
         for (int i = 0; i < 2000; i++)
         {
             text2 = findStr.Cut("Q", "Q");
-           // Console.WriteLine(text);
+            // Console.WriteLine(text);
         }
     }
 }
@@ -66,7 +70,7 @@ public static class Ext
         else if (endIndex == -1 && exception == false)
             return null;
 
-        
+
         return text.Substring(beginIndex, endIndex - beginIndex);
     }
 }

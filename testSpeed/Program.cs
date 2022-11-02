@@ -1,79 +1,72 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using System;
-
-BenchmarkRunner.Run(typeof(Program).Assembly);
-
-
-Console.WriteLine();
+using System.Text.RegularExpressions;
 
 
-[MemoryDiagnoser]
+string text = Regex.Match("8932Q12892891Q32332",
+                    "Q(?<obj>[^Q]+)").Groups["obj"].Value;
+Console.WriteLine(text);
+string test1 = "8932Q12892891Q32332".Cut("Q", "Q");
+Console.WriteLine(test1);
+BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
+
 public class Test
 {
 
-    [Benchmark]
-    public void Chunk()
-    {
-        List<int> ls = new List<int>();
-        var result = Enumerable.Range(0, 100000).Chunk(10);
-        foreach (var collection in result)
-        {
-            foreach (var item in collection)
-            {
-                ls.Add(item);
-            }
-        }
-    }
 
- 
+
+    string text1 = "";
     [Benchmark]
-    public void ChunkLazy()
-    {
-        List<int> ls = new List<int>();
-        var result = EnumeratorExt.СhunkLazy(Enumerable.Range(0, 100000), 10);
-        foreach (var collection in result)
+    public void RegexTest() {
+        var obj = new string('-', 1000);
+        string findStr = $"{obj}Q12345Q{obj}";
+      
+        for (int i = 0; i < 100000; i++)
         {
-            foreach (var item in collection)
-            {
-                ls.Add(item);
-            }
-        }
-    }
-    [Benchmark]
-    public void ChunkLazyNotMat()
-    {
-        List<int> ls = new List<int>();
-        var result = Enumerable.Range(0, 100000).Chunk(10);
-        foreach (var collection in result)
-        {
-            
-        }
-    }
-    [Benchmark]
-    public void ChunkNotMat()
-    {
-        List<int> ls = new List<int>();
-        var result = EnumeratorExt.СhunkLazy(Enumerable.Range(0, 100000), 10);
-        foreach (var collection in result)
-        {
+             text1 = Regex.Match(findStr, "Q(?<obj>[^Q]+)").Groups["obj"].Value;
            
         }
     }
-} 
-     
-static class EnumeratorExt
-{
-    public static IEnumerable<IEnumerable<T>> СhunkLazy<T>(this IEnumerable<T> enumerable, int size)
-    {
-        int count = 0;
-        return enumerable.GroupBy(a =>
+    string text2 = "";
+    [Benchmark]
+    public void Cut() {
+        var obj = new string('-', 1000);
+        string findStr = $"{obj}Q12345Q{obj}";
+       
+        for (int i = 0; i < 10000; i++)
         {
-            count++;
-            if (count >= size)
-                count = 0;
-            return count;
-        }).Select(a => a.AsEnumerable());
+            text2 = findStr.Cut("Q", "Q");
+           // Console.WriteLine(text);
+        }
     }
+}
+public static class Ext
+{
 
+    public static string Cut(this string text, string begin, string end, bool exception = false)
+    {
+        //if (string.IsNullOrEmpty(text)
+        //    && string.IsNullOrEmpty(begin) &&
+        //    string.IsNullOrEmpty(end))
+        //{
+        //    throw new NullReferenceException();
+        //}
+        int beginIndex = text.IndexOf(begin);
+
+        if (beginIndex == -1 && exception == true)
+            throw new Exception();
+        else if (beginIndex == -1 && exception == false)
+            return null;
+        beginIndex = beginIndex + begin.Length;
+        int endIndex = text.IndexOf(end, beginIndex);
+
+        if (endIndex == -1 && exception == true)
+            throw new Exception();
+        else if (endIndex == -1 && exception == false)
+            return null;
+
+        
+        return text.Substring(beginIndex, endIndex - beginIndex);
+    }
 }
